@@ -1,0 +1,4 @@
+main: "com.riintouge.tomeofperitia.TomeOfPeritia"
+version: "${displayVersion}"
+api-version: "1.18"
+name: "TomeOfPeritia"

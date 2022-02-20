@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain.languageVersion.set( JavaLanguageVersion.of( 17 ) )
+}
+
+repositories() {
+    mavenCentral()
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+}
+
+def apiVersion = "1.18.1-R0.1-SNAPSHOT"
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:' + apiVersion
+}
+
+def buildDateVersion = new Date().format( "yyyy.MM.dd" )
+def minecraftAndPaperVersions = apiVersion.split( "-" )
+def displayVersion = "${minecraftAndPaperVersions[ 0 ]}-${buildDateVersion}"
+
+archivesBaseName = "TomeOfPeritia-${minecraftAndPaperVersions[ 0 ]}"
+version = buildDateVersion
+group = "com.riintouge.tomeofperitia" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+
+processResources {
+    // Ensure this task is performed when values change
+    inputs.property "displayVersion", displayVersion
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    // Replace stuff in plugin.yml
+    from( sourceSets.main.resources.srcDirs ) {
+        include 'plugin.yml'
+        expand 'displayVersion':displayVersion
+    }
+
+    // Copy everything else except the plugin.yml
+    from( sourceSets.main.resources.srcDirs ) {
+        exclude 'plugin.yml'
+    }
+}
